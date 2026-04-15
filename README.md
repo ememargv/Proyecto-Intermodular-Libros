@@ -16,4 +16,4 @@ Este proyecto consiste en el desarrollo de una aplicacion para la gestion de una
 - /docs: Documentacion tecnica y archivos de configuracion.
 
 ## Estado del proyecto
-La fase de diseño y creacion de la base de datos se encuentra finalizada. Se han implementado las tablas necesarias para la gestion de usuarios, libros, autores, generos y colecciones personales.
+La fase de diseño y creacion de la base de datos se encuentra finalizada. Se han implementado las tablas necesarias para la gestion de usuarios, libros, autores, generos y colecciones personales. 
