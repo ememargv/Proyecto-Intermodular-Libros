@@ -1,35 +1,39 @@
-# Proyecto Intermodular - Gestion de Biblioteca
+# Proyecto Intermodular - Gestión de Biblioteca
 1º Desarrollo de Aplicaciones Multiplataforma (DAM)
 
-## Introduccion
-Este proyecto consiste en el desarrollo de una aplicacion para la gestion de una coleccion personal de libros. El sistema permite administrar usuarios, autores y un catalogo bibliografico, facilitando el seguimiento de lecturas y valoraciones personales.
+## Introducción
+Este proyecto consiste en el desarrollo de una aplicación para la gestión de una colección personal de libros. El sistema permite administrar usuarios, autores y un catálogo bibliográfico, facilitando el seguimiento de lecturas y valoraciones personales.
 
-## Tecnologias
-- Lenguaje: Java
+## Tecnologías
+- Lenguaje: Java (JDK 17+)
 - Interfaz: JavaFX
 - Base de datos: MySQL (XAMPP)
-- Gestion de versiones: Git / GitHub
+- Driver de conexión: MySQL Connector/J
+- Gestión de versiones: Git / GitHub
 
 ## Estructura del repositorio
-- /src: Directorio para el codigo fuente de la aplicacion.
-- /sql: Contiene el script de creacion de la base de datos (crear_tablas.sql).
-- /docs: Documentacion tecnica y archivos de configuracion.
-- /docs/diagramas: Esquemas graficos del modelo de datos.
+- /src: Directorio para el código fuente de la aplicación.
+  - /conexion: Lógica de enlace con MySQL.
+  - /modelo: Clases de objeto (Libro, Usuario, etc.).
+  - /dao: Gestión de acceso a datos.
+- /sql: Contiene el script de creación de la base de datos (crear_tablas.txt).
+- /docs: Documentación técnica y archivos de configuración.
+- /docs/diagramas: Esquemas gráficos del modelo de datos.
 
-## Analisis del Modelo de Datos
-La aplicacion gestiona la informacion centralizada en la entidad Libro. Para permitir una organizacion eficiente y escalable, se han definido las siguientes relaciones y entidades:
+## Análisis del Modelo de Datos
+La aplicación gestiona la información centralizada en la entidad Libro. Para permitir una organización eficiente y escalable, se han definido las siguientes relaciones y entidades:
 
 ### Entidades Principales
-- **Libro y Coleccion:** Existe una relacion de muchos a muchos (N:M) entre libros y las colecciones de los usuarios. Esto se gestiona mediante una tabla intermedia que permite que un libro pertenezca a varias listas y que cada coleccion contenga multiples ejemplares.
-- **Autores y Generos:** Se han definido como entidades independientes. Un autor puede estar vinculado a varios libros y un genero puede englobar diversas obras, estableciendo relaciones de uno a muchos (1:N).
+- **Libro y Colección:** Relación de muchos a muchos (N:M) gestionada mediante una tabla intermedia. Permite que cada usuario gestione su propia lista con estados de lectura y puntuaciones.
+- **Autores y Géneros:** Entidades independientes con relaciones de uno a muchos (1:N) hacia la tabla de libros.
+- **Usuarios:** Gestión de perfiles con credenciales únicas para el acceso al sistema.
 
-### Normalización y Escalabilidad del Diseño
-Se ha aplicado un proceso de normalizacion al diseño, decidiendo crear entidades propias para categorias como el Estado de lectura y los Generos Literarios. Esta estructura presenta una ventaja clave: si en el futuro se desea ampliar el sistema (por ejemplo, añadiendo nuevos estados), es mucho mas sencillo y eficiente realizar la actualizacion directamente en las tablas de la base de datos que modificar el codigo de la aplicacion. Esto garantiza un sistema mas flexible y mantenible.
+## Estado de la implementación
+- **Base de Datos:** Implementación física completada con éxito en MySQL. El esquema incluye 6 tablas (autores, géneros, estados, libros, usuarios y colección) con sus respectivas claves foráneas y restricciones.
+- **Conexión:** Capa de conexión JDBC operativa y testeada.
+- **Modelado:** Creación de clases POJO (Plain Old Java Objects) para representar las entidades del sistema en el entorno Java.
 
-## Estado de la implementacion
-Se ha completado la implementacion fisica de la base de datos. El script SQL para la creacion de tablas, relaciones y restricciones se encuentra disponible en la carpeta /sql.
-
-Proximos pasos:
-- Desarrollo de la capa de conexion mediante JDBC en Java.
-- Diseño de interfaces graficas con JavaFX.
-- Integracion de la logica de negocio y gestion de eventos.
+Próximos pasos:
+- Diseño de interfaces gráficas con JavaFX (Ventanas de Login y Panel Principal).
+- Desarrollo de métodos CRUD (Crear, Leer, Actualizar, Borrar) en la capa DAO.
+- Implementación de la lógica de filtrado y búsqueda de libros.
