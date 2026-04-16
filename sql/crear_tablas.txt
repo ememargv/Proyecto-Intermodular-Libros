@@ -1,0 +1,49 @@
+CREATE DATABASE IF NOT EXISTS biblioteca_dam;
+USE biblioteca_dam;
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_usuario VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    correo_electronico VARCHAR(100)
+);
+
+CREATE TABLE autores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    nacionalidad VARCHAR(50)
+);
+
+CREATE TABLE generos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_genero VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE estados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_estado VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE libros (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    ruta_portada VARCHAR(255),
+    id_autor INT,
+    id_genero INT,
+    CONSTRAINT fk_libro_autor FOREIGN KEY (id_autor) REFERENCES autores(id),
+    CONSTRAINT fk_libro_genero FOREIGN KEY (id_genero) REFERENCES generos(id)
+);
+
+CREATE TABLE coleccion (
+    id_coleccion INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT,
+    id_libro INT,
+    id_estado INT,
+    puntuacion INT CHECK (puntuacion BETWEEN 1 AND 5),
+    CONSTRAINT fk_col_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    CONSTRAINT fk_col_libro FOREIGN KEY (id_libro) REFERENCES libros(id),
+    CONSTRAINT fk_col_estado FOREIGN KEY (id_estado) REFERENCES estados(id),
+    UNIQUE (id_usuario, id_libro)
+);
+
+INSERT INTO estados (nombre_estado) VALUES ('Pendiente'), ('Leyendo'), ('Leído');

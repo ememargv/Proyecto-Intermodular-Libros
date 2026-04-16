@@ -12,13 +12,24 @@ Este proyecto consiste en el desarrollo de una aplicacion para la gestion de una
 
 ## Estructura del repositorio
 - /src: Directorio para el codigo fuente de la aplicacion.
-- /sql: Contiene el script de creacion de la base de datos.
+- /sql: Contiene el script de creacion de la base de datos (crear_tablas.sql).
+- /docs: Documentacion tecnica y archivos de configuracion.
 - /docs/diagramas: Esquemas graficos del modelo de datos.
 
+## Analisis del Modelo de Datos
+La aplicacion gestiona la informacion centralizada en la entidad Libro. Para permitir una organizacion eficiente y escalable, se han definido las siguientes relaciones y entidades:
+
+### Entidades Principales
+- **Libro y Coleccion:** Existe una relacion de muchos a muchos (N:M) entre libros y las colecciones de los usuarios. Esto se gestiona mediante una tabla intermedia que permite que un libro pertenezca a varias listas y que cada coleccion contenga multiples ejemplares.
+- **Autores y Generos:** Se han definido como entidades independientes. Un autor puede estar vinculado a varios libros y un genero puede englobar diversas obras, estableciendo relaciones de uno a muchos (1:N).
+
+### Normalización y Escalabilidad del Diseño
+Se ha aplicado un proceso de normalizacion al diseño, decidiendo crear entidades propias para categorias como el Estado de lectura y los Generos Literarios. Esta estructura presenta una ventaja clave: si en el futuro se desea ampliar el sistema (por ejemplo, añadiendo nuevos estados), es mucho mas sencillo y eficiente realizar la actualizacion directamente en las tablas de la base de datos que modificar el codigo de la aplicacion. Esto garantiza un sistema mas flexible y mantenible.
+
 ## Estado de la implementacion
-Actualmente el proyecto cuenta con el diseño logico y grafico de la base de datos finalizado. Se ha incorporado la documentacion tecnica necesaria en la carpeta /docs para definir las relaciones entre usuarios, libros y estados de lectura.
+Se ha completado la implementacion fisica de la base de datos. El script SQL para la creacion de tablas, relaciones y restricciones se encuentra disponible en la carpeta /sql.
 
 Proximos pasos:
-- Implementacion de scripts SQL para la creacion de tablas.
-- Desarrollo de la capa de conexion mediante JDBC.
+- Desarrollo de la capa de conexion mediante JDBC en Java.
 - Diseño de interfaces graficas con JavaFX.
+- Integracion de la logica de negocio y gestion de eventos.
