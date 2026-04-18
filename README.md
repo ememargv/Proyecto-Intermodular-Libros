@@ -6,7 +6,7 @@ Este proyecto consiste en el desarrollo de una aplicación para la gestión de u
 
 ## Tecnologías
 - Lenguaje: Java (JDK 17+)
-- Interfaz: JavaFX
+- Interfaz: JavaFX + Scene Builder
 - Base de datos: MySQL (XAMPP)
 - Driver de conexión: MySQL Connector/J
 - Gestión de versiones: Git / GitHub
@@ -14,26 +14,26 @@ Este proyecto consiste en el desarrollo de una aplicación para la gestión de u
 ## Estructura del repositorio
 - /src: Directorio para el código fuente de la aplicación.
   - /conexion: Lógica de enlace con MySQL.
-  - /modelo: Clases de objeto (Libro, Usuario, etc.).
-  - /dao: Gestión de acceso a datos (En desarrollo).
-- /sql: Contiene el script de creación de la base de datos (crear_tablas.txt).
-- /docs: Documentación técnica y archivos de configuración.
-- /docs/diagramas: Esquemas gráficos del modelo de datos (E-R y Relacional).
+  - /modelo: Clases de objeto (Libro, Usuario, Autor).
+  - /dao: Clases de acceso a datos (LibroDAO, AutorDAO, GeneroDAO).
+  - /vista: Archivos FXML para la interfaz gráfica (LoginView.fxml).
+- /recursos: Carpeta para archivos multimedia.
+  - /portadas: Almacenamiento de imágenes de los libros.
+- /sql: Script de creación de la base de datos y tablas.
+- /docs: Documentación técnica y diagramas.
 
 ## Análisis del Modelo de Datos
-La aplicación utiliza un diseño relacional normalizado para garantizar la integridad de los datos.
+La aplicación utiliza un diseño relacional normalizado para garantizar la integridad de los datos y evitar redundancias.
 
 ### Entidades y Relaciones
-- **Relación N:M (Libro-Usuario):** Implementada mediante la tabla intermedia "coleccion", permitiendo que cada usuario gestione estados de lectura y puntuaciones (1-5) de forma independiente.
-- **Integridad Referencial:** Se han aplicado restricciones de clave foránea (FK), valores únicos (UQ) en credenciales y autoincrementos (AI) en claves primarias.
+- **Relación N:M (Libro-Usuario):** Gestionada a través de la tabla "coleccion", donde se almacenan estados de lectura y puntuaciones personalizadas.
+- **Integridad:** Uso de claves foráneas (FK), claves primarias autoincrementales y restricciones de unicidad en credenciales de usuario.
 
-## Estado de la implementación
-- **Base de Datos:** Estructura física completada en MySQL ('biblioteca_dam').
-- **Población de Datos:** Tabla "generos" inicializada con 11 categorías (Fantasía, Erótica, Ciencia-ficción, etc.).
-- **Documentación:** Finalizados los diagramas Entidad-Relación y el Modelo Relacional con cardinalidades.
-- **Conexión:** Capa JDBC configurada y testeada con éxito.
-
-Proximos pasos:
-- Implementación de la capa DAO para la extracción de datos.
-- Introducción de datos de prueba (Libros y Autores) vía phpMyAdmin.
-- Desarrollo de la interfaz gráfica con JavaFX.
+## Estado de la implementación (Actualizado)
+- **Base de Datos:** Estructura completada en MySQL. Tablas pobladas con géneros, autores y libros de prueba.
+- **Capa de Datos (DAO):** - GeneroDAO: Funcional y verificado.
+  - LibroDAO y AutorDAO: Creados para gestionar la persistencia de los objetos.
+- **Interfaz Gráfica:** - Entorno JavaFX SDK configurado e integrado en el IDE.
+  - Diseño base de LoginView.fxml creado en Scene Builder.
+  - Identificadores (fx:id) asignados para la lógica de carga de portadas.
+- **Conexión:** Test de conectividad superado con éxito mediante la clase PruebaConexion.

@@ -4,11 +4,14 @@ import java.sql.Connection;
 
 public class PruebaConexion {
     public static void main(String[] args) {
-        Connection c = ConexionBD.conectar();
-        if (c != null) {
-            System.out.println("Conexion establecida con exito.");
+        System.out.println("Comprobando conexion con MySQL...");
+
+        Connection con = ConexionBD.conectar();
+
+        if (con != null) {
+            System.out.println("OK: Conexion establecida con exito.");
         } else {
-            System.out.println("Error en la conexion.");
+            System.out.println("ERROR: No se pudo conectar a la base de datos.");
         }
     }
 }

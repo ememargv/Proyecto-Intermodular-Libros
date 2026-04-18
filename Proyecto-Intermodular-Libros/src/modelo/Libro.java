@@ -7,10 +7,11 @@ public class Libro {
     private int idAutor;
     private int idGenero;
 
+    // Constructor vacío
     public Libro() {}
 
-    public Libro(int id, String titulo, String rutaPortada, int idAutor, int idGenero) {
-        this.id = id;
+    // Constructor con datos (sin ID, porque es autoincremental)
+    public Libro(String titulo, String rutaPortada, int idAutor, int idGenero) {
         this.titulo = titulo;
         this.rutaPortada = rutaPortada;
         this.idAutor = idAutor;
@@ -18,14 +19,10 @@ public class Libro {
     }
 
     // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
     public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
     public String getRutaPortada() { return rutaPortada; }
-    public void setRutaPortada(String rutaPortada) { this.rutaPortada = rutaPortada; }
     public int getIdAutor() { return idAutor; }
-    public void setIdAutor(int idAutor) { this.idAutor = idAutor; }
     public int getIdGenero() { return idGenero; }
-    public void setIdGenero(int idGenero) { this.idGenero = idGenero; }
+
+    // ... puedes añadir el resto de getters/setters si los necesitas
 }
