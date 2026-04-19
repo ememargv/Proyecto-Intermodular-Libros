@@ -47,3 +47,37 @@ CREATE TABLE coleccion (
 );
 
 INSERT INTO estados (nombre_estado) VALUES ('Pendiente'), ('Leyendo'), ('Leído');
+
+
+
+
+--Usuario de prueba para el login
+INSERT INTO usuarios (id,nombre_usuario, password, email) 
+VALUES (1,'admin', '1234', 'admin@biblioteca.com');
+
+
+INSERT INTO autores (nombre, nacionalidad) VALUES 
+('J.K. Rowling', 'Británica'),
+('Stephen King', 'Estadounidense'),
+('George R.R. Martin', 'Estadounidense'),
+('Brandon Sanderson', 'Estadounidense'),
+('Carlos Ruiz Zafón', 'Española'),
+('Cassandra Clare', 'Estadounidense'),
+('Julia Navarro', 'Española'),
+('Suzanne Collins', 'Estadounidense'),
+('J.R.R. Tolkien', 'Británica');
+--Libros de prueba
+
+INSERT INTO libros (titulo, id_autor, id_genero, ruta_portada) VALUES 
+('Harry Potter y la Piedra Filosofal', 1, 1, 'harry_potter.jpg'),
+('El Resplandor', 2, 4, 'resplandor.jpg'),
+('Juego de Tronos', 3, 1, 'juego_tronos.jpg'),
+('Elantris', 4, 1, 'elantris.jpg'),
+('Marina', 5, 5, 'marina.jpg'),
+('Cazadores de Sombras', 6, 1, 'cazadores.jpg'),
+('Dime quién soy', 7, 7, 'navarro.jpg'),
+('Los Juegos del Hambre', 8, 3, 'juegos_hambre.jpg'),
+('El Hobbit', 9, 1, 'hobbit.jpg');
+
+
+

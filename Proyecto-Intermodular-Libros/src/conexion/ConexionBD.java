@@ -13,7 +13,6 @@ public class ConexionBD {
         Connection conexion = null;
         try {
             conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
-            System.out.println("Conexion establecida con exito.");
         } catch (SQLException e) {
             System.out.println("Error al conectar con la base de datos: " + e.getMessage());
         }
