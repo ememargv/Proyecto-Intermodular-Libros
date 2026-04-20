@@ -8,7 +8,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.LoginController">
    <children>
-      <Button fx:id="btnEntrar" layoutX="264.0" layoutY="342.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="btnEntrar" layoutX="264.0" layoutY="342.0" mnemonicParsing="false" text="Entrar" />
       <TextField fx:id="txtUsuario" layoutX="111.0" layoutY="298.0" />
       <ImageView fx:id="imgPortada" fitHeight="227.0" fitWidth="508.0" layoutX="36.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true" />
       <PasswordField fx:id="txtPassword" layoutX="310.0" layoutY="298.0" />

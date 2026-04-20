@@ -2,7 +2,7 @@
 1º Desarrollo de Aplicaciones Multiplataforma (DAM)
 
 ## Introducción
-Esta aplicación permite gestionar una colección personal de libros, permitiendo al usuario registrar sus lecturas, puntuarlas, permitir hacer un seguimiento de lecturas (leído/no leído/leyendo), visualizar las portadas de forma organizada, y realizar una valoración personal.
+Esta aplicación permite gestionar una colección personal de libros, permitiendo al usuario registrar sus lecturas, puntuarlas, realizar un seguimiento (leído/no leído/leyendo), visualizar las portadas de forma organizada y realizar una valoración personal.
 
 ## Tecnologías
 - **Lenguaje:** Java (JDK 17+)
@@ -14,42 +14,38 @@ Esta aplicación permite gestionar una colección personal de libros, permitiend
 ## Estructura del repositorio
 - **/src:** Código fuente organizado bajo el patrón **MVC** (Modelo-Vista-Controlador).
   - **/conexion:** Lógica de enlace con MySQL ('ConexionBD').
-  - **/controlador:** Lógica de negocio y gestión de eventos ('LoginController').
+  - **/controlador:** Lógica de negocio y gestión de eventos ('LoginController', 'PrincipalController').
   - **/modelo:** Clases de objeto (Libro, Usuario, Autor).
   - **/dao:** Clases de acceso a datos (LibroDAO, AutorDAO, etc.).
-  - **/vista:** Archivos FXML para la interfaz gráfica ('LoginView.fxml').
+  - **/vista:** Archivos FXML para la interfaz gráfica ('LoginView.fxml', 'PrincipalView.fxml').
 - **/sql:** Script de creación de la base de datos 'biblioteca_dam'.
 - **/docs:** Documentación técnica y diagramas.
-- **'/docs/xml':** Definición y validación de datos en formato XML.
+- **/docs/xml:** Definición y validación de datos en formato XML.
 
 ## Análisis del Modelo de Datos
 La aplicación utiliza un diseño relacional normalizado para garantizar la integridad de los datos.
-- **Seguridad:** Implementación de 'PreparedStatement' para prevenir ataques de Inyección SQL en el acceso.
+- **Seguridad:** Implementación de 'PreparedStatement' para prevenir ataques de Inyección SQL.
 - **Integridad:** Restricciones 'NOT NULL' en credenciales y uso de claves foráneas para la consistencia del catálogo.
+- **Normalización:** Uso de tablas intermedias para relaciones N-M y tablas maestras para Estados, Géneros y Autores.
 
-## Estado de la implementación (Hito: Login Funcional)
+## Estado de la implementación (Hito: Navegación y Pantalla Principal)
 
 ### 1. Base de Datos
-- Estructura completada en MySQL con la tabla 'usuarios' operativa.
-- Sistema de autenticación verificado mediante consultas directas.
-- Simplificación para que un libro pertenezca a un solo género al igual que un libro solo pueda estar escrito por un único autor.
-- Tabla intermedia por N-M y una tabla extra 'Estado' independiente, para permitir la escalabilidad en futuras actualizaciones sin modificar el código. (Normalización).
-- Implementación de las pertinentes claves foraneas para evitar duplicidad.
-- Añadido UNIQUE y NOT NULL para evitar campos vacíos indeseados en sitios clave y duplicidad de correos o usuarios.
-
+- Estructura completada en MySQL con las tablas de usuarios y catálogo operativas.
+- Sistema de autenticación verificado y restricciones de integridad ('UNIQUE', 'NOT NULL') aplicadas.
 
 ### 2. Capa de Control y Lógica
-- **Controlador de Login:** Implementado siguiendo el principio de separación de intereses. Se ha evitado el uso de etiquetas de evento en el FXML, vinculando los controles mediante el método '@FXML initialize()' y el uso de lambdas ('setOnAction') en Java.
-- **Gestión de Alertas:** Sistema de validación de campos mediante ventanas emergentes (`Alert`) para mejorar la experiencia de usuario.
-- **Clase PruebaConexión:** He eliminado esa clase para mayor facilidad y limpieza del código.
+- **Controlador de Login:** Implementado con validación contra BD y gestión de alertas.
+- **Navegación:** Implementado el "salto" de ventana exitoso. El sistema cierra el Login y abre la Ventana Principal tras validar credenciales.
+- **Comunicación entre Ventanas:** Implementado el paso de parámetros mediante 'loader.getController()', permitiendo que la ventana principal reciba y muestre el nombre del usuario logueado.
+- **Gestión de Eventos:** Vinculación estricta en código mediante '@FXML initialize()' y expresiones Lambda, evitando el uso de atributos de evento en el archivo FXML.
 
 ### 3. Interfaz Gráfica (JavaFX)
-- **Escena de Login:** Diseño finalizado en Scene Builder y correctamente vinculado a la clase controladora.
-- **Configuración del Entorno:** Integración de librerías externas y configuración de **VM Options** para el despliegue del SDK de JavaFX.
-- **Conectividad JDBC:** Resolución de dependencias del conector MySQL para asegurar la persistencia.
+- **Escena de Login:** Finalizada y funcional.
+- **Escena Principal:** Estructura inicial creada con 'AnchorPane', incluyendo un saludo personalizado ('Label') y una tabla de datos ('TableView') configurada con columnas para Título, Autor y Género.
 
 ### 4. Conexión y Pruebas
-- **Prueba de Autenticación:** Verificada con éxito. El sistema comunica la interfaz con la base de datos, permitiendo el acceso solo con credenciales válidas registradas en el servidor local.
+- **Prueba de Flujo Completo:** Verificada con éxito. El sistema comunica la interfaz con MySQL, valida el acceso, transfiere el nombre de usuario y gestiona el cierre de sesión correctamente.
 
 ---
 
