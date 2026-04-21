@@ -4,10 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,9 +20,17 @@ public class LoginController {
     @FXML
     private Button btnEntrar;
 
+    //botón para ir a la pantalla de registro
+    @FXML
+    private Hyperlink btnIrRegistro;
+
     @FXML
     public void initialize() {
+        //Acción para el botón Entrar
         btnEntrar.setOnAction(event -> intentarLogin());
+
+        //Acción para el botón de ir a Registro
+        btnIrRegistro.setOnAction(event -> abrirRegistro());
     }
 
     private void intentarLogin() {
@@ -45,8 +50,26 @@ public class LoginController {
         }
     }
 
-        private void abrirPrincipal(String nombreUsuario) {
-            try {
+    // Métodopara abrir la ventana de Registro
+    private void abrirRegistro() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/RegistroView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Registro de Usuario - Biblioteca");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+
+        } catch (Exception e) {
+            System.err.println("Error al cargar la ventana de registro: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void abrirPrincipal(String nombreUsuario) {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/PrincipalView.fxml"));
             Parent root = loader.load();
 
@@ -61,7 +84,7 @@ public class LoginController {
             Stage currentStage = (Stage) btnEntrar.getScene().getWindow();
             currentStage.close();
 
-            } catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Error al cargar la ventana principal: " + e.getMessage());
             e.printStackTrace();
         }

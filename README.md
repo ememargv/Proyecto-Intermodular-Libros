@@ -2,55 +2,50 @@
 1º Desarrollo de Aplicaciones Multiplataforma (DAM)
 
 ## Introducción
-Esta aplicación permite gestionar una colección personal de libros, permitiendo al usuario registrar sus lecturas, puntuarlas, realizar un seguimiento (leído/no leído/leyendo), visualizar las portadas de forma organizada y realizar una valoración personal.
+Esta aplicación permite gestionar una colección personal de libros. El usuario puede registrar sus lecturas, puntuarlas, realizar un seguimiento del estado (leído, no leído o leyendo) y organizar su biblioteca de forma visual y eficiente.
 
-## Tecnologías
+## Tecnologías Utilizadas
 - **Lenguaje:** Java (JDK 17+)
-- **Interfaz:** JavaFX 21+ + Scene Builder
-- **Base de datos:** MySQL (XAMPP)/JDBC
-- **Driver de conexión:** MySQL Connector/J
-- **Gestión de versiones:** Git / GitHub
+- **Interfaz Gráfica:** JavaFX 21 + Scene Builder
+- **Base de Datos:** MySQL (XAMPP) a través de JDBC
+- **Driver de Conexión:** MySQL Connector/J
+- **Control de Versiones:** Git y GitHub
 
-## Estructura del repositorio
-- **/src:** Código fuente organizado bajo el patrón **MVC** (Modelo-Vista-Controlador).
-  - **/conexion:** Lógica de enlace con MySQL ('ConexionBD').
-  - **/controlador:** Lógica de negocio y gestión de eventos ('LoginController', 'PrincipalController').
-  - **/modelo:** Clases de objeto (Libro, Usuario, Autor).
-  - **/dao:** Clases de acceso a datos (LibroDAO, AutorDAO, etc.).
-  - **/vista:** Archivos FXML para la interfaz gráfica ('LoginView.fxml', 'PrincipalView.fxml').
-- **/sql:** Script de creación de la base de datos 'biblioteca_dam'.
-- **/docs:** Documentación técnica y diagramas.
-- **/docs/xml:** Definición y validación de datos en formato XML.
+## Estructura del Proyecto
+El código fuente está organizado siguiendo el patrón de diseño **MVC (Modelo-Vista-Controlador)** para garantizar un código limpio y escalable:
+
+- **/src/conexion:** Gestión de la conexión técnica con el servidor MySQL.
+- **/src/modelo:** Clases que representan las entidades de datos (Libro, Usuario, Autor).
+- **/src/vista:** Archivos FXML que definen la interfaz gráfica.
+- **/src/controlador:** Lógica de control que gestiona la interacción del usuario con la interfaz.
+- **/src/dao:** Capa de Acceso a Datos (Data Access Object). 
+
+> **Nota de diseño:** He estructurado el proyecto siguiendo el patrón **DAO** para separar la lógica de la base de datos de los controladores. Así, si mañana cambiamos de base de datos, solo tengo que tocar los DAOs y no toda la interfaz gráfica.
 
 ## Análisis del Modelo de Datos
-La aplicación utiliza un diseño relacional normalizado para garantizar la integridad de los datos.
-- **Seguridad:** Implementación de 'PreparedStatement' para prevenir ataques de Inyección SQL.
-- **Integridad:** Restricciones 'NOT NULL' en credenciales y uso de claves foráneas para la consistencia del catálogo.
-- **Normalización:** Uso de tablas intermedias para relaciones N-M y tablas maestras para Estados, Géneros y Autores.
+La aplicación utiliza un diseño relacional normalizado para garantizar la integridad de la información:
+- **Seguridad:** Uso de 'PreparedStatement' en todas las consultas para prevenir ataques de Inyección SQL.
+- **Integridad:** Implementación de restricciones 'NOT NULL', claves primarias autoincrementales y claves foráneas para mantener la consistencia.
+- **Persistencia:** Los datos se almacenan de forma permanente en un servidor local MySQL.
 
-## Estado de la implementación (Hito: Navegación y Pantalla Principal)
+## Estado de la Implementación (Hito: Registro y Navegación)
 
 ### 1. Base de Datos
-- Estructura completada en MySQL con las tablas de usuarios y catálogo operativas.
-- Sistema de autenticación verificado y restricciones de integridad ('UNIQUE', 'NOT NULL') aplicadas.
+- Tablas de 'usuarios' y 'libros' operativas con integridad referencial.
+- Configuración de campos 'UNIQUE' para evitar correos o nombres de usuario duplicados.
 
 ### 2. Capa de Control y Lógica
-- **Controlador de Login:** Implementado con validación contra BD y gestión de alertas.
-- **Navegación:** Implementado el "salto" de ventana exitoso. El sistema cierra el Login y abre la Ventana Principal tras validar credenciales.
-- **Comunicación entre Ventanas:** Implementado el paso de parámetros mediante 'loader.getController()', permitiendo que la ventana principal reciba y muestre el nombre del usuario logueado.
-- **Gestión de Eventos:** Vinculación estricta en código mediante '@FXML initialize()' y expresiones Lambda, evitando el uso de atributos de evento en el archivo FXML.
+- **Sistema de Login:** Validación de credenciales en tiempo real contra la base de datos.
+- **Sistema de Registro:** Implementado con éxito. Permite crear nuevos usuarios desde la interfaz, validando que los datos sean correctos antes de insertarlos en MySQL.
+- **Navegación:** Gestión de ventanas mediante 'Stage' y 'FXMLLoader'. Se ha implementado el uso de ventanas modales para el registro, mejorando la experiencia de usuario.
 
 ### 3. Interfaz Gráfica (JavaFX)
-- **Escena de Login:** Finalizada y funcional.
-- **Escena Principal:** Estructura inicial creada con 'AnchorPane', incluyendo un saludo personalizado ('Label') y una tabla de datos ('TableView') configurada con columnas para Título, Autor y Género.
+- **Login y Registro:** Vistas finales completamente vinculadas con sus respectivos controladores.
+- **Pantalla Principal:** Diseño inicial con 'TableView' y etiquetas dinámicas que muestran el nombre del usuario activo.
 
-### 4. Conexión y Pruebas
-- **Prueba de Flujo Completo:** Verificada con éxito. El sistema comunica la interfaz con MySQL, valida el acceso, transfiere el nombre de usuario y gestiona el cierre de sesión correctamente.
-
----
-
-### Notas de Ejecución
-Para ejecutar el proyecto correctamente en IntelliJ/Eclipse:
+## Notas de Ejecución
+Para ejecutar el proyecto en un entorno de desarrollo (IntelliJ/Eclipse):
 1. Configurar las **VM Options** con la ruta local al SDK de JavaFX:
-   '--module-path "TU_RUTA_AL_SDK\lib" --add-modules javafx.controls,javafx.fxml'
-2. Asegurar que el JAR del conector MySQL esté añadido en las librerías del proyecto ('Project Structure > Libraries').
+   '--module-path "RUTA_A_TU_SDK\lib" --add-modules javafx.controls,javafx.fxml'
+2. Asegurar que el conector de MySQL ('mysql-connector-j') esté incluido en las librerías del proyecto.
+3. Importar el script SQL incluido en la carpeta '/sql' para recrear la base de datos localmente.

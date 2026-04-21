@@ -6,7 +6,14 @@ public class Usuario {
     private String password;
     private String correoElectronico;
 
+
     public Usuario() {}
+
+    public Usuario(String nombreUsuario, String correoElectronico, String password) {
+        this.nombreUsuario = nombreUsuario;
+        this.correoElectronico = correoElectronico;
+        this.password = password;
+    }
 
     public Usuario(int id, String nombreUsuario, String password, String correoElectronico) {
         this.id = id;
