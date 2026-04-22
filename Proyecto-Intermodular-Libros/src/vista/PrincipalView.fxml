@@ -19,6 +19,7 @@
                   <TableColumn fx:id="colGenero" prefWidth="75.0" text="Género" />
               </columns>
             </TableView>
+            <Button fx:id="btnAñadirLibro" layoutX="342.0" layoutY="129.0" mnemonicParsing="false" onAction="#abrirFormularioNuevoLibro" text="Añadir libro" />
          </children>
       </AnchorPane>
    </children>
