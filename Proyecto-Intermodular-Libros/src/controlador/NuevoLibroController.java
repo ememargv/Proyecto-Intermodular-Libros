@@ -1,6 +1,8 @@
 package controlador;
 
 import dao.LibroDAO;
+import dao.ColeccionDAO;
+import modelo.Libro;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -16,20 +18,15 @@ public class NuevoLibroController {
     @FXML private Button btnCancelar;
 
     private LibroDAO libroDAO = new LibroDAO();
-
-    //mañana para vincular el libro al usuario que ha hecho login
+    private ColeccionDAO coleccionDAO = new ColeccionDAO();
     private int idUsuarioLogueado;
 
     @FXML
     public void initialize() {
-        //Rellenar los combos desde la base de datos (LibroDAO)
         cbAutor.setItems(libroDAO.obtenerNombresAutores());
         cbGenero.setItems(libroDAO.obtenerNombresGeneros());
-
-        //Rellenar estados
         cbEstado.setItems(FXCollections.observableArrayList("Pendiente", "Leyendo", "Leído"));
 
-        //Decido aqui mejor qeu en scene builder
         btnCancelar.setOnAction(e -> cerrarVentana());
         btnGuardar.setOnAction(e -> guardarLibro());
     }
@@ -40,18 +37,34 @@ public class NuevoLibroController {
         String nombreGenero = cbGenero.getValue();
         String estado = cbEstado.getValue();
 
-        // Validación básica
         if (titulo.isEmpty() || nombreAutor == null || nombreGenero == null || estado == null) {
             mostrarAlerta("Campos obligatorios", "Por favor, rellena todos los campos.");
             return;
         }
 
-        //para ver que la ventana funciona
-        System.out.println("LOG: Intentando guardar -> " + titulo + " | Autor: " + nombreAutor);
+        int idAutor = libroDAO.obtenerIdAutorPorNombre(nombreAutor);
+        int idGenero = libroDAO.obtenerIdGeneroPorNombre(nombreGenero);
 
-        // Mañana implementar la búsqueda de IDs y el insert en 'libros' y 'colección'
+        if (idAutor != -1 && idGenero != -1) {
+            Libro nuevo = new Libro(titulo, null, idAutor, idGenero);
 
-        cerrarVentana();
+            //Inserta el libro y obtiene su ID automático
+            int idLibroNuevo = libroDAO.insertarLibroYObtenerId(nuevo);
+
+            if (idLibroNuevo != -1) {
+                //Inserta en la tabla colección con el ID del usuario
+                boolean exito = coleccionDAO.agregarLibroAColeccion(idUsuarioLogueado, idLibroNuevo, estado);
+
+                if (exito) {
+                    System.out.println("LOG: Libro añadido a la colección del usuario " + idUsuarioLogueado);
+                    cerrarVentana();
+                } else {
+                    mostrarAlerta("Error", "No se pudo añadir el libro a tu colección.");
+                }
+            } else {
+                mostrarAlerta("Error", "No se pudo crear el libro en el catálogo.");
+            }
+        }
     }
 
     private void cerrarVentana() {
@@ -67,7 +80,6 @@ public class NuevoLibroController {
         alert.showAndWait();
     }
 
-    //Método para recibir el ID del usuario desde la pantalla principal
     public void setIdUsuarioLogueado(int id) {
         this.idUsuarioLogueado = id;
     }

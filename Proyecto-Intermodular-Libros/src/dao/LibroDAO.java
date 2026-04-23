@@ -8,97 +8,99 @@ import java.sql.*;
 
 public class LibroDAO {
 
-    //Obtiene los libros con JOIN para la tabla
-    public ObservableList<Libro> obtenerLibrosParaTabla() {
+     //Obtiene solo los libros que pertenecen al usuario logueado.
+    public ObservableList<Libro> obtenerLibrosParaTabla(int idUsuario) {
         ObservableList<Libro> lista = FXCollections.observableArrayList();
 
+        //unimos colección con libros, autores y géneros
         String sql = "SELECT l.titulo, a.nombre AS nombreAutor, g.nombre_genero AS nombreGenero " +
-                "FROM libros l " +
+                "FROM coleccion c " +
+                "JOIN libros l ON c.id_libro = l.id " +
                 "JOIN autores a ON l.id_autor = a.id " +
-                "JOIN generos g ON l.id_genero = g.id";
+                "JOIN generos g ON l.id_genero = g.id " +
+                "WHERE c.id_usuario = ?";
 
         try (Connection con = ConexionBD.conectar();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idUsuario);
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Libro libro = new Libro(
+                lista.add(new Libro(
                         rs.getString("titulo"),
                         rs.getString("nombreAutor"),
                         rs.getString("nombreGenero")
-                );
-                lista.add(libro);
+                ));
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener libros para la tabla: " + e.getMessage());
+            System.err.println("Error al obtener libros del usuario: " + e.getMessage());
         }
         return lista;
     }
 
-    // Inserta nuevo libro en el catálogo general
-    public boolean insertarLibro(Libro libro) {
+    public int insertarLibroYObtenerId(Libro libro) {
         String sql = "INSERT INTO libros (titulo, ruta_portada, id_autor, id_genero) VALUES (?, ?, ?, ?)";
-
         try (Connection con = ConexionBD.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getRutaPortada());
             ps.setInt(3, libro.getIdAutor());
             ps.setInt(4, libro.getIdGenero());
 
-            return ps.executeUpdate() > 0;
-
+            int filas = ps.executeUpdate();
+            if (filas > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) return rs.getInt(1);
+            }
         } catch (SQLException e) {
-            System.err.println("Error al insertar libro: " + e.getMessage());
-            return false;
+            System.err.println("Error al insertar libro y obtener ID: " + e.getMessage());
         }
+        return -1;
     }
 
-    //obtiene nombres d eautor
     public ObservableList<String> obtenerNombresAutores() {
         ObservableList<String> autores = FXCollections.observableArrayList();
         String sql = "SELECT nombre FROM autores";
-
         try (Connection con = ConexionBD.conectar();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                autores.add(rs.getString("nombre"));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener nombres de autores: " + e.getMessage());
-        }
+            while (rs.next()) { autores.add(rs.getString("nombre")); }
+        } catch (SQLException e) { System.err.println("Error autores: " + e.getMessage()); }
         return autores;
     }
-    //Obtiene nombres de la tabla generos
+
     public ObservableList<String> obtenerNombresGeneros() {
         ObservableList<String> generos = FXCollections.observableArrayList();
         String sql = "SELECT nombre_genero FROM generos";
-
         try (Connection con = ConexionBD.conectar();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                generos.add(rs.getString("nombre_genero"));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener nombres de géneros: " + e.getMessage());
-        }
+            while (rs.next()) { generos.add(rs.getString("nombre_genero")); }
+        } catch (SQLException e) { System.err.println("Error géneros: " + e.getMessage()); }
         return generos;
     }
-    //metodo para depurar
-    public void listarLibrosConsola() {
-        String sql = "SELECT * FROM libros";
-        try (Connection con = ConexionBD.conectar();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getInt("id") + " - Título: " + rs.getString("titulo"));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al listar en consola: " + e.getMessage());
-        }
+    public int obtenerIdAutorPorNombre(String nombre) {
+        String sql = "SELECT id FROM autores WHERE nombre = ?";
+        try (Connection con = ConexionBD.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("id");
+        } catch (SQLException e) { System.err.println("Error ID autor: " + e.getMessage()); }
+        return -1;
+    }
+
+    public int obtenerIdGeneroPorNombre(String nombre) {
+        String sql = "SELECT id FROM generos WHERE nombre_genero = ?";
+        try (Connection con = ConexionBD.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("id");
+        } catch (SQLException e) { System.err.println("Error ID género: " + e.getMessage()); }
+        return -1;
     }
 }

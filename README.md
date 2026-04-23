@@ -29,23 +29,23 @@ He diseñado esta arquitectura pensando en la escalabilidad. Si en el futuro nec
 La aplicación utiliza un diseño relacional normalizado para garantizar la integridad de la información:
 - **Seguridad:** Uso de 'PreparedStatement' en todas las consultas para prevenir ataques de Inyección SQL.
 - **Integridad:** Implementación de restricciones 'NOT NULL', claves primarias autoincrementales y claves foráneas para mantener la consistencia entre las tablas 'autores', 'generos' y 'libros'.
-- **Persistencia:** Los datos se almacenan de forma permanente en un servidor local MySQL.
+- **Privacidad:** Las consultas a la base de datos están filtradas por el ID del usuario activo, asegurando que cada usuario acceda únicamente a su colección personal de libros.
 
-## Estado de la Implementación (Hito: Gestión de Colección)
+## Estado de la Implementación (Hito: Gestión Completa de Colección)
 
 ### 1. Base de Datos
-- Tablas de 'usuarios', 'libros', 'autores' y 'generos' operativas con integridad referencial.
-- Configuración de campos 'UNIQUE' para evitar correos o nombres de usuario duplicados.
+- Tablas de 'usuarios', 'libros', 'autores', 'generos' y 'coleccion' operativas con integridad referencial.
+- Implementación de una relación N:M (Muchos a Muchos) para permitir que varios usuarios gestionen sus bibliotecas de forma independiente.
 
 ### 2. Capa de Control y Lógica
-- **Sistema de Login:** Validación de credenciales en tiempo real contra la base de datos.
-- **Carga de Datos Relacionales:** Implementación de 'JOINS' en SQL para mostrar nombres de autores y géneros en lugar de simples IDs numéricos.
-- **Gestión de Formularios:** Uso de 'ObservableList' para rellenar desplegables ('ComboBox') de forma dinámica desde la base de datos.
-- **Navegación:** Gestión de ventanas mediante 'Stage' y 'FXMLLoader'. Uso de ventanas modales ('APPLICATION_MODAL') para el alta de libros, asegurando que la tabla principal se refresque automáticamente al cerrar el formulario.
+- **Sistema de Login:** Validación de credenciales y persistencia del ID de usuario durante la sesión.
+- **Lógica de Negocio:** Implementación de guardado en cascada. Al añadir un libro, el sistema genera el registro en la tabla maestra y vincula automáticamente dicho registro con el usuario activo en la tabla 'coleccion'.
+- **Consultas Multi-tabla:** Uso de 'JOINS' avanzados para mostrar información coherente combinando datos de cuatro tablas distintas.
+- **Gestión de Formularios:** Uso de 'ObservableList' para rellenar desplegables ('ComboBox') de forma dinámica.
 
 ### 3. Interfaz Gráfica (JavaFX)
-- **Pantalla Principal:** 'TableView' configurada con 'PropertyValueFactory' para mostrar la colección del usuario.
-- **Formulario de Alta:** Nueva vista 'NuevoLibroView' implementada para permitir al usuario elegir autores y géneros existentes mediante desplegables, evitando errores de introducción de datos.
+- **Pantalla Principal:** 'TableView' con actualización automática en tiempo real tras cada inserción.
+- **Formulario de Alta:** Vista 'NuevoLibroView' modal que garantiza un flujo de trabajo sin errores para el usuario.
 
 ## Notas de Ejecución
 Para ejecutar el proyecto en un entorno de desarrollo (IntelliJ/Eclipse):

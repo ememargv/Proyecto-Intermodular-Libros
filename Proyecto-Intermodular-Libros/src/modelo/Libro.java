@@ -18,7 +18,6 @@ public class Libro {
         this.idGenero = idGenero;
     }
 
-    // Constructor para la Tabla(mostrar datos)
     public Libro(String titulo, String nombreAutor, String nombreGenero) {
         this.titulo = titulo;
         this.nombreAutor = nombreAutor;
@@ -30,6 +29,6 @@ public class Libro {
     public String getRutaPortada() { return rutaPortada; }
     public int getIdAutor() { return idAutor; }
     public int getIdGenero() { return idGenero; }
-    public String getNombreAutor() { return nombreAutor; } // <--- Importante
-    public String getNombreGenero() { return nombreGenero; } // <--- Importante
+    public String getNombreAutor() { return nombreAutor; }
+    public String getNombreGenero() { return nombreGenero; }
 }

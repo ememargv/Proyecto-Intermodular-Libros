@@ -11,14 +11,10 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
-    @FXML
-    private TextField txtUsuario;
-    @FXML
-    private PasswordField txtPassword;
-    @FXML
-    private Button btnEntrar;
-    @FXML
-    private Hyperlink btnIrRegistro;
+    @FXML private TextField txtUsuario;
+    @FXML private PasswordField txtPassword;
+    @FXML private Button btnEntrar;
+    @FXML private Hyperlink btnIrRegistro;
 
     @FXML
     public void initialize() {
@@ -35,13 +31,13 @@ public class LoginController {
             return;
         }
 
-        //Usamos el DAO para validar
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         Usuario usuarioLogueado = usuarioDAO.verificarLogin(user, pass);
 
         if (usuarioLogueado != null) {
             System.out.println("Sesión iniciada: " + usuarioLogueado.getNombreUsuario());
-            abrirPrincipal(usuarioLogueado.getNombreUsuario());
+            // PASAMOS EL OBJETO USUARIO COMPLETO
+            abrirPrincipal(usuarioLogueado);
         } else {
             mostrarAlerta("Error de autenticación", "Usuario o contraseña incorrectos.");
         }
@@ -56,18 +52,18 @@ public class LoginController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
-            System.err.println("Error al cargar la ventana de registro: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private void abrirPrincipal(String nombreUsuario) {
+    private void abrirPrincipal(Usuario usuario) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/PrincipalView.fxml"));
             Parent root = loader.load();
 
             PrincipalController controller = loader.getController();
-            controller.setNombreUsuario(nombreUsuario);
+            //Pasamos ID y Nombre a la principal
+            controller.setDatosUsuario(usuario.getId(), usuario.getNombreUsuario());
 
             Stage stage = new Stage();
             stage.setTitle("Panel Principal - Biblioteca");
@@ -77,7 +73,6 @@ public class LoginController {
             Stage currentStage = (Stage) btnEntrar.getScene().getWindow();
             currentStage.close();
         } catch (Exception e) {
-            System.err.println("Error al cargar la ventana principal: " + e.getMessage());
             e.printStackTrace();
         }
     }
