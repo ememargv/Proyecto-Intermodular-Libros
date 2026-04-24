@@ -19,10 +19,10 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtNombreUsuario" />
-                  <TextField fx:id="txtEmail" />
-                  <PasswordField fx:id="txtPassword" />
-                  <PasswordField fx:id="txtConfirmarPassword" />
+                  <TextField fx:id="txtNombreUsuario" promptText="Nombre de Usuario" />
+                  <TextField fx:id="txtEmail" promptText="Correo Electrónico" />
+                  <PasswordField fx:id="txtPassword" promptText="Contraseña" />
+                  <PasswordField fx:id="txtConfirmarPassword" promptText="Repite Contraseña" />
                   <Button fx:id="btnRegistrar" mnemonicParsing="false" text="Registrarse" />
                   <Button fx:id="btnVolver" mnemonicParsing="false" text="Cancelar" />
                </children>

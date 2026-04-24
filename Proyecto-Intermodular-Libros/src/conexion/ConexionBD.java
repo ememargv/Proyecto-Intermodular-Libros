@@ -8,13 +8,18 @@ public class ConexionBD {
     private static final String URL = "jdbc:mysql://localhost:3306/biblioteca_dam";
     private static final String USUARIO = "root";
     private static final String PASSWORD = "";
-
+    // Instancia única de la conexión
+    private static Connection conexion = null;
+    // Constructor privado
+    private ConexionBD() {}
     public static Connection conectar() {
-        Connection conexion = null;
         try {
-            conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
+            if (conexion == null || conexion.isClosed()) {
+                conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
+                System.out.println("LOG: Conexión establecida (Singleton)");
+            }
         } catch (SQLException e) {
-            System.out.println("Error al conectar con la base de datos: " + e.getMessage());
+            System.err.println("Error al conectar: " + e.getMessage());
         }
         return conexion;
     }

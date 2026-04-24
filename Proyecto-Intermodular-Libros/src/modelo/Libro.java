@@ -8,6 +8,7 @@ public class Libro {
     private int idGenero;
     private String nombreAutor;
     private String nombreGenero;
+    private int puntuacion; // Nuevo
 
     public Libro() {}
 
@@ -18,10 +19,12 @@ public class Libro {
         this.idGenero = idGenero;
     }
 
-    public Libro(String titulo, String nombreAutor, String nombreGenero) {
+    // Constructor para la Tabla (incluyendo puntuación)
+    public Libro(String titulo, String nombreAutor, String nombreGenero, int puntuacion) {
         this.titulo = titulo;
         this.nombreAutor = nombreAutor;
         this.nombreGenero = nombreGenero;
+        this.puntuacion = puntuacion;
     }
 
     // Getters
@@ -31,4 +34,5 @@ public class Libro {
     public int getIdGenero() { return idGenero; }
     public String getNombreAutor() { return nombreAutor; }
     public String getNombreGenero() { return nombreGenero; }
+    public int getPuntuacion() { return puntuacion; } // Nuevo
 }

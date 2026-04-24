@@ -4,22 +4,26 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.PrincipalController">
    <children>
-      <AnchorPane layoutX="-8.0" layoutY="-29.0" prefHeight="501.0" prefWidth="802.0">
+      <AnchorPane layoutX="-1.0" layoutY="-36.0" prefHeight="501.0" prefWidth="802.0">
          <children>
-            <Label fx:id="lblSaludo" layoutX="289.0" layoutY="92.0" text="¡Bienvenido/a al Sistema de Gestión!" textAlignment="CENTER" />
-            <Button fx:id="btnCerrarSesion" layoutX="342.0" layoutY="415.0" mnemonicParsing="false" text="Cerrar Sesión" />
-            <TableView fx:id="tablaLibros" layoutX="286.0" layoutY="175.0" prefHeight="200.0" prefWidth="221.0">
+            <Label fx:id="lblSaludo" layoutX="29.0" layoutY="42.0" text="¡Bienvenido/a al Sistema de Gestión!" textAlignment="CENTER" />
+            <Button fx:id="btnCerrarSesion" layoutX="680.0" layoutY="453.0" mnemonicParsing="false" text="Cerrar Sesión" />
+            <TableView fx:id="tablaLibros" layoutX="211.0" layoutY="111.0" prefHeight="336.0" prefWidth="512.0">
               <columns>
-                <TableColumn fx:id="colTitulo" prefWidth="75.0" text="Título" />
-                <TableColumn fx:id="colAutor" prefWidth="75.0" text="Autor" />
-                  <TableColumn fx:id="colGenero" prefWidth="75.0" text="Género" />
+                <TableColumn fx:id="colTitulo" prefWidth="201.5999755859375" text="Título" />
+                <TableColumn fx:id="colAutor" prefWidth="131.19998168945312" text="Autor" />
+                  <TableColumn fx:id="colGenero" prefWidth="102.4000244140625" text="Género" />
+                  <TableColumn fx:id="colPuntuacion" prefWidth="77.5999755859375" text="Puntuación" />
               </columns>
             </TableView>
-            <Button fx:id="btnAñadirLibro" layoutX="342.0" layoutY="129.0" mnemonicParsing="false" onAction="#abrirFormularioNuevoLibro" text="Añadir libro" />
+            <Button fx:id="btnAñadirLibro" layoutX="40.0" layoutY="85.0" mnemonicParsing="false" onAction="#abrirFormularioNuevoLibro" text="Añadir libro" />
+            <Button fx:id="btnEliminar" layoutX="40.0" layoutY="135.0" mnemonicParsing="false" text="Eliminar Seleccionado" />
+            <TextField fx:id="txtBuscar" layoutX="401.0" layoutY="60.0" promptText="Buscar por título o autor" />
          </children>
       </AnchorPane>
    </children>

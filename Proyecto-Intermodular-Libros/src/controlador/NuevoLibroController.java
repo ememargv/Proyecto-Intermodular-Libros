@@ -14,6 +14,7 @@ public class NuevoLibroController {
     @FXML private ComboBox<String> cbAutor;
     @FXML private ComboBox<String> cbGenero;
     @FXML private ComboBox<String> cbEstado;
+    @FXML private ComboBox<Integer> cbPuntuacion; // Nuevo
     @FXML private Button btnGuardar;
     @FXML private Button btnCancelar;
 
@@ -26,6 +27,7 @@ public class NuevoLibroController {
         cbAutor.setItems(libroDAO.obtenerNombresAutores());
         cbGenero.setItems(libroDAO.obtenerNombresGeneros());
         cbEstado.setItems(FXCollections.observableArrayList("Pendiente", "Leyendo", "Leído"));
+        cbPuntuacion.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5)); // Nuevo: Rango de estrellas
 
         btnCancelar.setOnAction(e -> cerrarVentana());
         btnGuardar.setOnAction(e -> guardarLibro());
@@ -36,9 +38,10 @@ public class NuevoLibroController {
         String nombreAutor = cbAutor.getValue();
         String nombreGenero = cbGenero.getValue();
         String estado = cbEstado.getValue();
+        Integer puntuacion = cbPuntuacion.getValue(); // Nuevo
 
-        if (titulo.isEmpty() || nombreAutor == null || nombreGenero == null || estado == null) {
-            mostrarAlerta("Campos obligatorios", "Por favor, rellena todos los campos.");
+        if (titulo.isEmpty() || nombreAutor == null || nombreGenero == null || estado == null || puntuacion == null) {
+            mostrarAlerta("Campos obligatorios", "Por favor, rellena todos los campos incluyendo la puntuación.");
             return;
         }
 
@@ -47,16 +50,13 @@ public class NuevoLibroController {
 
         if (idAutor != -1 && idGenero != -1) {
             Libro nuevo = new Libro(titulo, null, idAutor, idGenero);
-
-            //Inserta el libro y obtiene su ID automático
             int idLibroNuevo = libroDAO.insertarLibroYObtenerId(nuevo);
 
             if (idLibroNuevo != -1) {
-                //Inserta en la tabla colección con el ID del usuario
-                boolean exito = coleccionDAO.agregarLibroAColeccion(idUsuarioLogueado, idLibroNuevo, estado);
+                // Ahora pasa también la puntuación al guardar
+                boolean exito = coleccionDAO.agregarLibroAColeccion(idUsuarioLogueado, idLibroNuevo, estado, puntuacion);
 
                 if (exito) {
-                    System.out.println("LOG: Libro añadido a la colección del usuario " + idUsuarioLogueado);
                     cerrarVentana();
                 } else {
                     mostrarAlerta("Error", "No se pudo añadir el libro a tu colección.");

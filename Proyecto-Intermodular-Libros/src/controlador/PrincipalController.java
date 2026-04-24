@@ -1,6 +1,8 @@
 package controlador;
 
 import dao.LibroDAO;
+import dao.ColeccionDAO;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,13 +19,17 @@ public class PrincipalController {
 
     @FXML private Button btnCerrarSesion;
     @FXML private Button btnAñadirLibro;
+    @FXML private Button btnEliminar;
+    @FXML private TextField txtBuscar;
     @FXML private Label lblSaludo;
     @FXML private TableView<Libro> tablaLibros;
     @FXML private TableColumn<Libro, String> colTitulo;
     @FXML private TableColumn<Libro, String> colAutor;
     @FXML private TableColumn<Libro, String> colGenero;
+    @FXML private TableColumn<Libro, Integer> colPuntuacion; // Nuevo
 
     private LibroDAO libroDAO = new LibroDAO();
+    private ColeccionDAO coleccionDAO = new ColeccionDAO();
     private int idUsuarioLogueado;
 
     @FXML
@@ -31,9 +37,17 @@ public class PrincipalController {
         colTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colAutor.setCellValueFactory(new PropertyValueFactory<>("nombreAutor"));
         colGenero.setCellValueFactory(new PropertyValueFactory<>("nombreGenero"));
+        colPuntuacion.setCellValueFactory(new PropertyValueFactory<>("puntuacion")); // Nuevo
 
-        // No llamo aquí a cargarLibrosEnTabla() porque aún no tengo el ID
-        //espera a setDatosUsuario()
+        if (txtBuscar != null) {
+            txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
+                filtrarLibros(newValue);
+            });
+        }
+
+        if (btnEliminar != null) {
+            btnEliminar.setOnAction(event -> eliminarLibroSeleccionado());
+        }
 
         btnCerrarSesion.setOnAction(event -> {
             Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
@@ -48,8 +62,6 @@ public class PrincipalController {
     public void setDatosUsuario(int id, String nombre) {
         this.idUsuarioLogueado = id;
         lblSaludo.setText("¡Bienvenido/a, " + nombre + "!");
-
-        //teniendo el ID carga sus libros
         cargarLibrosEnTabla();
     }
 
@@ -68,9 +80,7 @@ public class PrincipalController {
             stage.setScene(new Scene(root));
             stage.showAndWait();
 
-            // Refrescamos la tabla al volver
             cargarLibrosEnTabla();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,9 +89,49 @@ public class PrincipalController {
     private void cargarLibrosEnTabla() {
         if (idUsuarioLogueado > 0) {
             tablaLibros.getItems().clear();
-            // Pedimos solo los libros de cada usuario
             ObservableList<Libro> libros = libroDAO.obtenerLibrosParaTabla(this.idUsuarioLogueado);
             tablaLibros.setItems(libros);
         }
+    }
+
+    private void filtrarLibros(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            cargarLibrosEnTabla();
+        } else {
+            ObservableList<Libro> todosLosLibros = libroDAO.obtenerLibrosParaTabla(this.idUsuarioLogueado);
+            ObservableList<Libro> listaFiltrada = FXCollections.observableArrayList();
+            String filtro = texto.toLowerCase();
+
+            for (Libro libro : todosLosLibros) {
+                if (libro.getTitulo().toLowerCase().contains(filtro) ||
+                        libro.getNombreAutor().toLowerCase().contains(filtro)) {
+                    listaFiltrada.add(libro);
+                }
+            }
+            tablaLibros.setItems(listaFiltrada);
+        }
+    }
+
+    private void eliminarLibroSeleccionado() {
+        Libro seleccionado = tablaLibros.getSelectionModel().getSelectedItem();
+
+        if (seleccionado != null) {
+            boolean ok = coleccionDAO.eliminarLibroDeColeccion(this.idUsuarioLogueado, seleccionado.getTitulo());
+            if (ok) {
+                cargarLibrosEnTabla();
+            } else {
+                mostrarAlerta("Error", "No se pudo eliminar el libro de tu colección.");
+            }
+        } else {
+            mostrarAlerta("Atención", "Por favor, selecciona un libro de la tabla para eliminarlo.");
+        }
+    }
+
+    private void mostrarAlerta(String titulo, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

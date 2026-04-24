@@ -20,36 +20,31 @@ El código fuente está organizado siguiendo el patrón de diseño **MVC (Modelo
 - **/src/controlador:** Lógica de control que gestiona la interacción del usuario con la interfaz.
 - **/src/dao:** Capa de Acceso a Datos (Data Access Object).
 
-### Mi enfoque de diseño (Patrón DAO)
-En este proyecto he decidido separar estrictamente el SQL de los controladores. De esta forma, aplico el principio de responsabilidad única: el Controlador solo se encarga de la interfaz (leer textos y mostrar alertas), mientras que el DAO se encarga exclusivamente de la base de datos. 
-
-He diseñado esta arquitectura pensando en la escalabilidad. Si en el futuro necesitara cambiar MySQL por otro sistema como Oracle, solo tendría que modificar la clase 'ConexionBD' y los métodos dentro de los 'DAO'. Todo el resto de mi programa y la interfaz gráfica seguirían funcionando exactamente igual sin tener que cambiar ni una sola línea de código en los controladores.
+### Optimizaciones de Arquitectura
+1. **Patrón DAO:** Separación estricta del SQL de los controladores. Esto permite que el Controlador solo gestione la interfaz, mientras que el DAO se encarga exclusivamente de la persistencia, facilitando el mantenimiento y posibles migraciones de base de datos.
+2. **Patrón Singleton:** He refactorizado la clase 'ConexionBD' para implementar el patrón Singleton. Esto garantiza que el sistema mantenga una única instancia de la conexión a la base de datos, optimizando el uso de recursos y evitando aperturas innecesarias durante la ejecución.
 
 ## Análisis del Modelo de Datos
 La aplicación utiliza un diseño relacional normalizado para garantizar la integridad de la información:
-- **Seguridad:** Uso de 'PreparedStatement' en todas las consultas para prevenir ataques de Inyección SQL.
-- **Integridad:** Implementación de restricciones 'NOT NULL', claves primarias autoincrementales y claves foráneas para mantener la consistencia entre las tablas 'autores', 'generos' y 'libros'.
-- **Privacidad:** Las consultas a la base de datos están filtradas por el ID del usuario activo, asegurando que cada usuario acceda únicamente a su colección personal de libros.
+- **Seguridad:** Uso de 'PreparedStatement' en todas las consultas para prevenir ataques de inyección SQL.
+- **Integridad:** Implementación de restricciones 'NOT NULL', claves primarias autoincrementales y claves foráneas para mantener la consistencia entre tablas.
+- **Privacidad y Lógica N:M:** Las consultas están filtradas por el ID del usuario activo. El diseño de la tabla intermedia 'coleccion' permite que cada usuario tenga su propia experiencia, pudiendo puntuar y gestionar estados de forma independiente al catálogo general.
 
-## Estado de la Implementación (Hito: Gestión Completa de Colección)
+## Funcionalidades Destacadas
 
-### 1. Base de Datos
-- Tablas de 'usuarios', 'libros', 'autores', 'generos' y 'coleccion' operativas con integridad referencial.
-- Implementación de una relación N:M (Muchos a Muchos) para permitir que varios usuarios gestionen sus bibliotecas de forma independiente.
+### 1. Gestión de Puntuaciones y Estados
+- El sistema permite calificar cada libro con una nota del 1 al 5.
+- La puntuación es específica para cada usuario, permitiendo valoraciones distintas para una misma obra según la colección personal.
 
-### 2. Capa de Control y Lógica
-- **Sistema de Login:** Validación de credenciales y persistencia del ID de usuario durante la sesión.
-- **Lógica de Negocio:** Implementación de guardado en cascada. Al añadir un libro, el sistema genera el registro en la tabla maestra y vincula automáticamente dicho registro con el usuario activo en la tabla 'coleccion'.
-- **Consultas Multi-tabla:** Uso de 'JOINS' avanzados para mostrar información coherente combinando datos de cuatro tablas distintas.
-- **Gestión de Formularios:** Uso de 'ObservableList' para rellenar desplegables ('ComboBox') de forma dinámica.
+### 2. Búsqueda Dinámica y UX
+- **Filtro en tiempo real:** Implementación de un buscador que actualiza la tabla instantáneamente mientras el usuario escribe, buscando coincidencias tanto en el título como en el autor.
+- **Usabilidad (Prompt Texts):** Los campos de entrada incluyen guías visuales para facilitar el registro de datos.
 
-### 3. Interfaz Gráfica (JavaFX)
-- **Pantalla Principal:** 'TableView' con actualización automática en tiempo real tras cada inserción.
-- **Formulario de Alta:** Vista 'NuevoLibroView' modal que garantiza un flujo de trabajo sin errores para el usuario.
+### 3. Gestión de Colección (CRUD)
+- **Inserción Relacional:** Al añadir un libro, el sistema vincula automáticamente el registro con el ID de usuario logueado.
+- **Eliminación Segura:** El usuario puede retirar títulos de su biblioteca personal sin afectar al catálogo maestro de la aplicación.
 
 ## Notas de Ejecución
-Para ejecutar el proyecto en un entorno de desarrollo (IntelliJ/Eclipse):
-1. Configurar las **VM Options** con la ruta local al SDK de JavaFX:
-   '--module-path "RUTA_A_TU_SDK\lib" --add-modules javafx.controls,javafx.fxml'
-2. Asegurar que el conector de MySQL ('mysql-connector-j') esté incluido en las librerías del proyecto.
-3. Importar el script SQL incluido en la carpeta '/sql' para recrear la base de datos localmente.
+1. Configurar las **VM Options** en el IDE con la ruta local al SDK de JavaFX.
+2. Asegurar que el conector de MySQL ('mysql-connector-j') esté incluido en las librerías.
+3. Importar el script SQL incluido en la carpeta '/sql' para recrear la base de datos.

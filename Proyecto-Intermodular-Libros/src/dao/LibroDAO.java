@@ -8,12 +8,11 @@ import java.sql.*;
 
 public class LibroDAO {
 
-     //Obtiene solo los libros que pertenecen al usuario logueado.
     public ObservableList<Libro> obtenerLibrosParaTabla(int idUsuario) {
         ObservableList<Libro> lista = FXCollections.observableArrayList();
 
-        //unimos colección con libros, autores y géneros
-        String sql = "SELECT l.titulo, a.nombre AS nombreAutor, g.nombre_genero AS nombreGenero " +
+        //actualizado para incluir puntuacion
+        String sql = "SELECT l.titulo, a.nombre AS nombreAutor, g.nombre_genero AS nombreGenero, c.puntuacion " +
                 "FROM coleccion c " +
                 "JOIN libros l ON c.id_libro = l.id " +
                 "JOIN autores a ON l.id_autor = a.id " +
@@ -30,7 +29,8 @@ public class LibroDAO {
                 lista.add(new Libro(
                         rs.getString("titulo"),
                         rs.getString("nombreAutor"),
-                        rs.getString("nombreGenero")
+                        rs.getString("nombreGenero"),
+                        rs.getInt("puntuacion") // Cargamos la puntuación
                 ));
             }
         } catch (SQLException e) {
