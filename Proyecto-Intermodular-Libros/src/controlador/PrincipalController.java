@@ -20,13 +20,17 @@ public class PrincipalController {
     @FXML private Button btnCerrarSesion;
     @FXML private Button btnAñadirLibro;
     @FXML private Button btnEliminar;
+    @FXML private Button btnActualizar;
     @FXML private TextField txtBuscar;
+    @FXML private ComboBox<String> cbCambiarEstado;
+    @FXML private ComboBox<Integer> cbCambiarNota;
     @FXML private Label lblSaludo;
     @FXML private TableView<Libro> tablaLibros;
     @FXML private TableColumn<Libro, String> colTitulo;
     @FXML private TableColumn<Libro, String> colAutor;
     @FXML private TableColumn<Libro, String> colGenero;
-    @FXML private TableColumn<Libro, Integer> colPuntuacion; // Nuevo
+    @FXML private TableColumn<Libro, Integer> colPuntuacion;
+    @FXML private TableColumn<Libro, String> colEstado;
 
     private LibroDAO libroDAO = new LibroDAO();
     private ColeccionDAO coleccionDAO = new ColeccionDAO();
@@ -34,10 +38,24 @@ public class PrincipalController {
 
     @FXML
     public void initialize() {
+        // Configuración de columnas
         colTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colAutor.setCellValueFactory(new PropertyValueFactory<>("nombreAutor"));
         colGenero.setCellValueFactory(new PropertyValueFactory<>("nombreGenero"));
-        colPuntuacion.setCellValueFactory(new PropertyValueFactory<>("puntuacion")); // Nuevo
+        colPuntuacion.setCellValueFactory(new PropertyValueFactory<>("puntuacion"));
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("nombreEstado"));
+
+        // Rellenar combos
+        cbCambiarEstado.setItems(FXCollections.observableArrayList("Pendiente", "Leyendo", "Leído"));
+        cbCambiarNota.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5));
+
+        //Rellena los combos al hacer clic en una fila
+        tablaLibros.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                cbCambiarEstado.setValue(newSelection.getNombreEstado());
+                cbCambiarNota.setValue(newSelection.getPuntuacion());
+            }
+        });
 
         if (txtBuscar != null) {
             txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -45,18 +63,15 @@ public class PrincipalController {
             });
         }
 
-        if (btnEliminar != null) {
-            btnEliminar.setOnAction(event -> eliminarLibroSeleccionado());
-        }
+        btnEliminar.setOnAction(event -> eliminarLibroSeleccionado());
+        btnActualizar.setOnAction(event -> actualizarLibro());
 
         btnCerrarSesion.setOnAction(event -> {
             Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
             stage.close();
         });
 
-        if (btnAñadirLibro != null) {
-            btnAñadirLibro.setOnAction(event -> abrirFormularioNuevoLibro());
-        }
+        btnAñadirLibro.setOnAction(event -> abrirFormularioNuevoLibro());
     }
 
     public void setDatosUsuario(int id, String nombre) {
@@ -70,20 +85,15 @@ public class PrincipalController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/NuevoLibroView.fxml"));
             Parent root = loader.load();
-
             NuevoLibroController controller = loader.getController();
             controller.setIdUsuarioLogueado(this.idUsuarioLogueado);
-
             Stage stage = new Stage();
             stage.setTitle("Añadir nuevo libro a mi colección");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
-
             cargarLibrosEnTabla();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void cargarLibrosEnTabla() {
@@ -101,7 +111,6 @@ public class PrincipalController {
             ObservableList<Libro> todosLosLibros = libroDAO.obtenerLibrosParaTabla(this.idUsuarioLogueado);
             ObservableList<Libro> listaFiltrada = FXCollections.observableArrayList();
             String filtro = texto.toLowerCase();
-
             for (Libro libro : todosLosLibros) {
                 if (libro.getTitulo().toLowerCase().contains(filtro) ||
                         libro.getNombreAutor().toLowerCase().contains(filtro)) {
@@ -114,16 +123,10 @@ public class PrincipalController {
 
     private void eliminarLibroSeleccionado() {
         Libro seleccionado = tablaLibros.getSelectionModel().getSelectedItem();
-
         if (seleccionado != null) {
-            boolean ok = coleccionDAO.eliminarLibroDeColeccion(this.idUsuarioLogueado, seleccionado.getTitulo());
-            if (ok) {
+            if (coleccionDAO.eliminarLibroDeColeccion(idUsuarioLogueado, seleccionado.getTitulo())) {
                 cargarLibrosEnTabla();
-            } else {
-                mostrarAlerta("Error", "No se pudo eliminar el libro de tu colección.");
             }
-        } else {
-            mostrarAlerta("Atención", "Por favor, selecciona un libro de la tabla para eliminarlo.");
         }
     }
 
@@ -133,5 +136,23 @@ public class PrincipalController {
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();
+    }
+
+    private void actualizarLibro() {
+        Libro seleccionado = tablaLibros.getSelectionModel().getSelectedItem();
+        String nuevoEstado = cbCambiarEstado.getValue();
+        Integer nuevaNota = cbCambiarNota.getValue();
+
+        if (seleccionado != null && nuevoEstado != null && nuevaNota != null) {
+            boolean ok = coleccionDAO.actualizarPuntuacionYEstado(idUsuarioLogueado, seleccionado.getTitulo(), nuevaNota, nuevoEstado);
+            if (ok) {
+                cargarLibrosEnTabla();
+                mostrarAlerta("Éxito", "Libro actualizado correctamente.");
+            } else {
+                mostrarAlerta("Error", "No se pudo actualizar el libro.");
+            }
+        } else {
+            mostrarAlerta("Atención", "Selecciona un libro de la tabla, un estado y una nota.");
+        }
     }
 }
