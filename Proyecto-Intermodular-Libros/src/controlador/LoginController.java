@@ -62,7 +62,7 @@ public class LoginController {
             Parent root = loader.load();
 
             PrincipalController controller = loader.getController();
-            //Pasamos ID y Nombre a la principal
+            //Paso ID y Nombre a la principal
             controller.setDatosUsuario(usuario.getId(), usuario.getNombreUsuario());
 
             Stage stage = new Stage();

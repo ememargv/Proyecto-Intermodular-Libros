@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GeneroDAO {
 
-    // Este método devuelve la lista de nombres de géneros desde la BD
+    //devuelve la lista de nombres de géneros desde la BD
     public List<String> listarGeneros() {
         List<String> lista = new ArrayList<>();
         String sql = "SELECT nombre_genero FROM generos ORDER BY nombre_genero ASC";

@@ -21,7 +21,7 @@ public class ColeccionDAO {
         }
     }
 
-    // Nuevo método para actualizar puntuación y estado de un libro existente
+    //actualiza puntuación y estado de un libro existente
     public boolean actualizarPuntuacionYEstado(int idUsuario, String tituloLibro, int nuevaNota, String nuevoEstado) {
         int idEstado = obtenerIdEstadoPorNombre(nuevoEstado);
         String sql = "UPDATE coleccion SET puntuacion = ?, id_estado = ? " +
