@@ -1,4 +1,5 @@
 # Proyecto Intermodular - Gestión de Biblioteca Personal
+**Nombre**: María del Mar García Ventura
 
 ## Introducción
 Este proyecto consiste en una aplicación de escritorio diseñada para gestionar una biblioteca de libros de forma personalizada. El sistema permite a cada usuario llevar un control detallado de sus lecturas, puntuar sus obras favoritas y organizar su colección mediante una interfaz visual sencilla y eficiente. El objetivo principal ha sido integrar los conocimientos de todos los módulos del primer curso en una herramienta funcional y segura.
